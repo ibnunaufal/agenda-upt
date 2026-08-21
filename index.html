@@ -156,6 +156,30 @@
         border-color: rgba(255, 255, 255, 0.45);
       }
 
+      .refresh-btn {
+        margin-left: auto;
+        appearance: none;
+        -webkit-appearance: none;
+        font-family: inherit;
+        font-size: 15px;
+        line-height: 1;
+        padding: 9px 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #c3cfe0;
+        background: none;
+        cursor: pointer;
+      }
+
+      .refresh-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .refresh-btn:active {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease;
+      }
+
       .frame-wrap {
         flex: 1;
         position: relative;
@@ -218,6 +242,16 @@
         >
           ⚙️ Admin
         </button>
+
+        <button
+          type="button"
+          class="refresh-btn"
+          id="refreshBtn"
+          title="Muat ulang halaman"
+          onclick="refreshTab()"
+        >
+          🔄
+        </button>
       </div>
     </header>
 
@@ -231,7 +265,7 @@
     <script>
       // GANTI URL INI dengan URL hasil deploy Apps Script kamu (yang berakhiran /exec)
       const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbxpqQlmM66SLSn87dflZIvM0F-7oCjumgG7oimtyCdek00G1UCQs_JhwWy1FFc7HXz28g/exec";
+        "https://script.google.com/macros/s/AKfycbxkzuT0_lqNdBRIu9Aiq8aqd-6tUfa2BxWbptn86uUNoOnI66YrtmXCiJpPY9aOGChxwg/exec";
 
       const frames = {
       kalender: document.getElementById('frameKalender'),
@@ -265,6 +299,17 @@
 
       // Muat tab pertama saat halaman dibuka
       switchTab("kalender");
+
+      function refreshTab() {
+        const active = Object.keys(frames).find((key) =>
+          frames[key].classList.contains("active")
+        );
+        if (!active) return;
+        loadingHint.style.display = "flex";
+        frames[active].onload = () => { loadingHint.style.display = "none"; };
+        frames[active].src =
+          SCRIPT_URL + "?page=" + pageParam[active] + "&_t=" + Date.now();
+      }
     </script>
     <script
       type="module"
